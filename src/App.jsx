@@ -14,6 +14,7 @@ import { ArrowLeft } from 'lucide-react';
 // Tools
 import MultiDecoder from './tools/crypto/MultiDecoder';
 import XorToolkit from './tools/crypto/XorToolkit';
+import HashUtils from './tools/crypto/HashUtils';
 import NotesScratchpad from './tools/workspace/NotesScratchpad';
 import FlagHunter from './tools/workspace/FlagHunter';
 
@@ -34,6 +35,8 @@ function App() {
         return <MultiDecoder onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'xor':
         return <XorToolkit onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'hash':
+        return <HashUtils onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'notes':
         return <NotesScratchpad onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'flaghunter':
