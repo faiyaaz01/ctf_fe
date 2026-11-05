@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import { AuthProvider } from './context/AuthContext';
+import { AppProvider } from './context/AppContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChallengesPage from './pages/ChallengesPage';
@@ -49,7 +50,8 @@ function App() {
 
   return (
     <AuthProvider>
-      <div style={{ minHeight: '100vh', background: '#0b0f17', color: '#e2e8f0', display: 'flex', flexDirection: 'column' }}>
+      <AppProvider>
+        <div style={{ minHeight: '100vh', background: '#0b0f17', color: '#e2e8f0', display: 'flex', flexDirection: 'column' }}>
         <Navbar
           onOpenPalette={() => setPaletteOpen(true)}
           onOpenAuth={() => setActiveView('auth')}
@@ -151,7 +153,8 @@ function App() {
           }}
         />
       </div>
-    </AuthProvider>
+    </AppProvider>
+  </AuthProvider>
   );
 }
 

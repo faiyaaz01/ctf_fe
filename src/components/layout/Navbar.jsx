@@ -1,25 +1,10 @@
-import { useState, useEffect } from 'react';
 import { Terminal, Shield, LogOut, User as UserIcon, Trophy, Wrench } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import api from '../../services/api';
+import { useApp } from '../../context/AppContext';
 
 export default function Navbar({ onOpenPalette, onOpenAuth, onOpenChallenges, onOpenTools, activeView }) {
   const { user, logout, isAuthenticated } = useAuth();
-  const [backendOnline, setBackendOnline] = useState(false);
-
-  useEffect(() => {
-    const checkHealth = async () => {
-      try {
-        await api.get('/challenges', { timeout: 3000 });
-        setBackendOnline(true);
-      } catch {
-        setBackendOnline(false);
-      }
-    };
-    checkHealth();
-    const interval = setInterval(checkHealth, 15000);
-    return () => clearInterval(interval);
-  }, []);
+  const { backendOnline } = useApp();
 
   return (
     <header style={{
