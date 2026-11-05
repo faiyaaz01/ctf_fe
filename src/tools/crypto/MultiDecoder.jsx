@@ -1,96 +1,37 @@
-import { useState, useMemo } from 'react';
+import { useState, useRef } from 'react';
 import ToolWrapper from '../../components/common/ToolWrapper';
-import { Copy, Check, ArrowRight, Sparkles } from 'lucide-react';
+import { Copy, Check, Sparkles } from 'lucide-react';
 import { useFlagHunter } from '../../hooks/useFlagHunter';
+import api from '../../services/api';
 
 export default function MultiDecoder({ onSelectDestination }) {
   const [input, setInput] = useState('');
+  const [decoders, setDecoders] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [copiedKey, setCopiedKey] = useState(null);
   const { addCandidate } = useFlagHunter();
+  const debounceTimer = useRef(null);
 
-  // Helper decoding decoders
-  const decoders = useMemo(() => {
-    if (!input) return [];
+  const fetchServerDecodes = (val) => {
+    if (!val.trim()) {
+      setDecoders([]);
+      return;
+    }
+    setLoading(true);
+    api.post('/tools/crypto/decode', { input: val })
+      .then((res) => setDecoders(res.data || []))
+      .catch(() => setDecoders([]))
+      .finally(() => setLoading(false));
+  };
 
-    const results = [];
-
-    // 1. Base64
-    try {
-      const b64 = atob(input.trim());
-      if (b64 && /^[\x20-\x7E\r\n\t]+$/.test(b64)) {
-        results.push({ name: 'Base64', val: b64 });
-      }
-    } catch {}
-
-    // 2. Hex to ASCII
-    try {
-      const cleanHex = input.replace(/\s+|0x/g, '');
-      if (/^[0-9a-fA-F]+$/.test(cleanHex) && cleanHex.length % 2 === 0) {
-        let hexStr = '';
-        for (let i = 0; i < cleanHex.length; i += 2) {
-          hexStr += String.fromCharCode(parseInt(cleanHex.substr(i, 2), 16));
-        }
-        if (/^[\x20-\x7E\r\n\t]+$/.test(hexStr)) {
-          results.push({ name: 'Hex -> ASCII', val: hexStr });
-        }
-      }
-    } catch {}
-
-    // 3. URL Decode
-    try {
-      const urlDec = decodeURIComponent(input);
-      if (urlDec !== input) {
-        results.push({ name: 'URL Decoded', val: urlDec });
-      }
-    } catch {}
-
-    // 4. Binary to ASCII
-    try {
-      const cleanBin = input.trim().replace(/\s+/g, ' ');
-      const tokens = cleanBin.split(' ');
-      if (tokens.every((t) => /^[01]{7,8}$/.test(t))) {
-        const binStr = tokens.map((t) => String.fromCharCode(parseInt(t, 2))).join('');
-        results.push({ name: 'Binary (8-bit)', val: binStr });
-      }
-    } catch {}
-
-    // 5. ROT13
-    try {
-      const rot13 = input.replace(/[a-zA-Z]/g, (c) => {
-        const base = c <= 'Z' ? 65 : 97;
-        return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
-      });
-      if (rot13 !== input) {
-        results.push({ name: 'ROT13', val: rot13 });
-      }
-    } catch {}
-
-    // 6. Atbash (Reversed Alphabet)
-    try {
-      const atbash = input.replace(/[a-zA-Z]/g, (c) => {
-        const base = c <= 'Z' ? 65 : 97;
-        return String.fromCharCode(base + (25 - (c.charCodeAt(0) - base)));
-      });
-      results.push({ name: 'Atbash Cipher', val: atbash });
-    } catch {}
-
-    // 7. Reversed String
-    try {
-      const rev = input.split('').reverse().join('');
-      results.push({ name: 'Reversed Text', val: rev });
-    } catch {}
-
-    // 8. Decimal ASCII Codes (e.g., 70 76 65 71)
-    try {
-      const parts = input.trim().split(/[\s,]+/);
-      if (parts.length > 1 && parts.every((p) => /^\d+$/.test(p) && parseInt(p) <= 255)) {
-        const decAscii = parts.map((p) => String.fromCharCode(parseInt(p, 10))).join('');
-        results.push({ name: 'Decimal ASCII', val: decAscii });
-      }
-    } catch {}
-
-    return results;
-  }, [input]);
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setInput(val);
+    clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      fetchServerDecodes(val);
+    }, 300);
+  };
 
   const handleCopy = (key, text) => {
     navigator.clipboard.writeText(text);
@@ -106,8 +47,8 @@ export default function MultiDecoder({ onSelectDestination }) {
     <ToolWrapper
       title="Multi Decoder"
       category="Cryptography"
-      description="Simultaneous multi-format string decoder: Base64, Hex, URL, Binary, ROT13, Atbash, Decimal ASCII, and Reversal."
-      badge="Client"
+      description="Simultaneous multi-format string decoder computed on Java Spring Boot: Base64, Hex, URL, Binary, ROT13, Atbash, and Reversal."
+      badge="Java Engine"
       outputValue={decoders[0]?.val || ''}
       sourceToolId="decoder"
       onSelectDestination={onSelectDestination}
@@ -115,7 +56,7 @@ export default function MultiDecoder({ onSelectDestination }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <textarea
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           placeholder="Paste encoded ciphertext or hash string here..."
           style={{
             width: '100%',
@@ -133,9 +74,14 @@ export default function MultiDecoder({ onSelectDestination }) {
         />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
+            <span>Decoded Outputs (Java Engine)</span>
+            {loading && <span style={{ color: '#38bdf8' }}>Decoding on Server...</span>}
+          </div>
+
           {decoders.length === 0 ? (
             <div style={{ padding: 24, textAlign: 'center', color: '#64748b', fontSize: 13, background: '#0b0f17', borderRadius: 6, border: '1px solid #1e293b' }}>
-              Enter ciphertext above to see instant decodings
+              Enter ciphertext above to see server-side decodings
             </div>
           ) : (
             decoders.map((d, idx) => {

@@ -1,84 +1,59 @@
-import { useState, useMemo } from 'react';
+import { useState, useRef } from 'react';
 import ToolWrapper from '../../components/common/ToolWrapper';
-import { Sparkles, Copy, Check, RefreshCw } from 'lucide-react';
+import { Sparkles, Copy, Check } from 'lucide-react';
 import { useFlagHunter } from '../../hooks/useFlagHunter';
-
-// ETAOIN SHRDLU English character scoring heuristic
-const ENGLISH_FREQ = {
-  e: 12.7, t: 9.1, a: 8.2, o: 7.5, i: 7.0, n: 6.7, s: 6.3, h: 6.1, r: 6.0,
-  d: 4.3, l: 4.0, c: 2.8, u: 2.8, m: 2.4, w: 2.4, f: 2.2, g: 2.0, y: 2.0,
-  p: 1.9, b: 1.5, v: 1.0, k: 0.8, j: 0.15, x: 0.15, q: 0.10, z: 0.07, ' ': 15.0
-};
-
-function scoreEnglish(text) {
-  let score = 0;
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i].toLowerCase();
-    score += ENGLISH_FREQ[char] || -5;
-  }
-  return Math.round(score);
-}
+import api from '../../services/api';
 
 export default function XorToolkit({ onSelectDestination }) {
   const [tab, setTab] = useState('single'); // 'single' or 'repeating'
   const [input, setInput] = useState('');
   const [inputType, setInputType] = useState('hex'); // 'hex' or 'ascii'
   const [key, setKey] = useState('');
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [copiedKey, setCopiedKey] = useState(null);
   const { addCandidate } = useFlagHunter();
+  const debounceTimer = useRef(null);
 
-  // Convert input string into byte array
-  const rawBytes = useMemo(() => {
-    if (!input.trim()) return [];
-    if (inputType === 'hex') {
-      const clean = input.replace(/\s+|0x/g, '');
-      if (!/^[0-9a-fA-F]+$/.test(clean) || clean.length % 2 !== 0) return [];
-      const bytes = [];
-      for (let i = 0; i < clean.length; i += 2) {
-        bytes.push(parseInt(clean.substr(i, 2), 16));
-      }
-      return bytes;
-    } else {
-      return Array.from(input).map((c) => c.charCodeAt(0));
+  const fetchServerXor = (val = input, it = inputType, m = tab, k = key) => {
+    if (!val.trim()) {
+      setResults(null);
+      return;
     }
-  }, [input, inputType]);
+    setLoading(true);
+    api.post('/tools/crypto/xor', {
+      input: val,
+      inputType: it,
+      mode: m,
+      key: k
+    })
+      .then((res) => setResults(res.data))
+      .catch(() => setResults(null))
+      .finally(() => setLoading(false));
+  };
 
-  // 1. Single-byte Brute Force (0x00 to 0xFF)
-  const bruteForceResults = useMemo(() => {
-    if (tab !== 'single' || rawBytes.length === 0) return [];
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setInput(val);
+    clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      fetchServerXor(val, inputType, tab, key);
+    }, 350);
+  };
 
-    const candidates = [];
-    for (let k = 0; k < 256; k++) {
-      let dec = '';
-      let isPrintable = true;
-      for (let i = 0; i < rawBytes.length; i++) {
-        const b = rawBytes[i] ^ k;
-        if (b < 32 || b > 126) {
-          if (b !== 10 && b !== 13 && b !== 9) {
-            isPrintable = false;
-          }
-        }
-        dec += String.fromCharCode(b);
-      }
-      if (isPrintable) {
-        const score = scoreEnglish(dec);
-        candidates.push({ key: k, text: dec, score });
-      }
-    }
+  const handleKeyChange = (e) => {
+    const k = e.target.value;
+    setKey(k);
+    clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      fetchServerXor(input, inputType, tab, k);
+    }, 350);
+  };
 
-    return candidates.sort((a, b) => b.score - a.score).slice(0, 15);
-  }, [rawBytes, tab]);
-
-  // 2. Repeating Key XOR
-  const repeatingXorResult = useMemo(() => {
-    if (tab !== 'repeating' || rawBytes.length === 0 || !key) return '';
-    const keyBytes = Array.from(key).map((c) => c.charCodeAt(0));
-    let out = '';
-    for (let i = 0; i < rawBytes.length; i++) {
-      out += String.fromCharCode(rawBytes[i] ^ keyBytes[i % keyBytes.length]);
-    }
-    return out;
-  }, [rawBytes, key, tab]);
+  const handleTabChange = (newTab) => {
+    setTab(newTab);
+    fetchServerXor(input, inputType, newTab, key);
+  };
 
   const handleCopy = (id, text) => {
     navigator.clipboard.writeText(text);
@@ -86,13 +61,16 @@ export default function XorToolkit({ onSelectDestination }) {
     setTimeout(() => setCopiedKey(null), 1500);
   };
 
+  const candidates = results?.candidates || [];
+  const repeatingOutput = results?.result || '';
+
   return (
     <ToolWrapper
       title="XOR Toolkit"
       category="Cryptography"
-      description="Single-byte brute force XOR cracker ranked by English letter frequency, and multi-byte repeating key XOR cipher."
-      badge="Client"
-      outputValue={tab === 'single' ? (bruteForceResults[0]?.text || '') : repeatingXorResult}
+      description="Single-byte brute force XOR cracker ranked by Java English letter frequency, and multi-byte repeating key XOR cipher on Spring Boot."
+      badge="Java Engine"
+      outputValue={tab === 'single' ? (candidates[0]?.text || '') : repeatingOutput}
       sourceToolId="xor"
       onSelectDestination={onSelectDestination}
     >
@@ -101,7 +79,7 @@ export default function XorToolkit({ onSelectDestination }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
           <div style={{ display: 'flex', gap: 6 }}>
             <button
-              onClick={() => setTab('single')}
+              onClick={() => handleTabChange('single')}
               style={{
                 background: tab === 'single' ? 'rgba(56, 189, 248, 0.15)' : '#0d1117',
                 color: tab === 'single' ? '#38bdf8' : '#94a3b8',
@@ -115,7 +93,7 @@ export default function XorToolkit({ onSelectDestination }) {
               Single-Byte Brute Force
             </button>
             <button
-              onClick={() => setTab('repeating')}
+              onClick={() => handleTabChange('repeating')}
               style={{
                 background: tab === 'repeating' ? 'rgba(56, 189, 248, 0.15)' : '#0d1117',
                 color: tab === 'repeating' ? '#38bdf8' : '#94a3b8',
@@ -133,7 +111,10 @@ export default function XorToolkit({ onSelectDestination }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#64748b' }}>
             <span>Input Type:</span>
             <button
-              onClick={() => setInputType('hex')}
+              onClick={() => {
+                setInputType('hex');
+                fetchServerXor(input, 'hex', tab, key);
+              }}
               style={{
                 background: inputType === 'hex' ? '#1e293b' : 'transparent',
                 color: inputType === 'hex' ? '#38bdf8' : '#64748b',
@@ -146,7 +127,10 @@ export default function XorToolkit({ onSelectDestination }) {
               HEX
             </button>
             <button
-              onClick={() => setInputType('ascii')}
+              onClick={() => {
+                setInputType('ascii');
+                fetchServerXor(input, 'ascii', tab, key);
+              }}
               style={{
                 background: inputType === 'ascii' ? '#1e293b' : 'transparent',
                 color: inputType === 'ascii' ? '#38bdf8' : '#64748b',
@@ -164,7 +148,7 @@ export default function XorToolkit({ onSelectDestination }) {
         {/* Input box */}
         <textarea
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           placeholder={inputType === 'hex' ? 'Paste hex ciphertext (e.g. 1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736)...' : 'Paste ASCII text...'}
           style={{
             width: '100%',
@@ -188,7 +172,7 @@ export default function XorToolkit({ onSelectDestination }) {
             <input
               type="text"
               value={key}
-              onChange={(e) => setKey(e.target.value)}
+              onChange={handleKeyChange}
               placeholder="e.g. secret, ICE, admin..."
               style={{
                 flex: 1,
@@ -208,16 +192,17 @@ export default function XorToolkit({ onSelectDestination }) {
         {/* Results view */}
         {tab === 'single' ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase' }}>
-              Top 15 English Frequency Candidates (0x00 - 0xFF)
+            <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
+              <span>Top 20 English Frequency Candidates (Java Engine)</span>
+              {loading && <span style={{ color: '#38bdf8' }}>Cracking in Java...</span>}
             </div>
 
-            {bruteForceResults.length === 0 ? (
+            {candidates.length === 0 ? (
               <div style={{ padding: 24, textAlign: 'center', color: '#64748b', fontSize: 13, background: '#0b0f17', borderRadius: 6, border: '1px solid #1e293b' }}>
-                Enter hex ciphertext above to brute-force all 256 byte keys
+                Enter hex ciphertext above to brute-force all 256 byte keys on Java server
               </div>
             ) : (
-              bruteForceResults.map((r) => {
+              candidates.map((r) => {
                 const isFlag = /flag\{|ctf\{|\{[^}]{4,}\}/i.test(r.text);
 
                 return (
@@ -234,8 +219,8 @@ export default function XorToolkit({ onSelectDestination }) {
                       gap: 12
                     }}
                   >
-                    <div style={{ width: 120, fontSize: 12, color: '#38bdf8' }}>
-                      Key: <strong>0x{r.key.toString(16).padStart(2, '0').toUpperCase()}</strong> ({r.key})
+                    <div style={{ width: 130, fontSize: 12, color: '#38bdf8' }}>
+                      Key: <strong>{r.keyHex}</strong> ({r.key})
                     </div>
 
                     <div style={{
@@ -251,7 +236,7 @@ export default function XorToolkit({ onSelectDestination }) {
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                       {isFlag && (
                         <button
-                          onClick={() => addCandidate(r.text, `XOR (Key 0x${r.key.toString(16)})`)}
+                          onClick={() => addCandidate(r.text, `XOR (Key ${r.keyHex})`)}
                           style={{
                             background: 'rgba(0, 255, 157, 0.15)',
                             border: '1px solid rgba(0, 255, 157, 0.3)',
@@ -300,8 +285,9 @@ export default function XorToolkit({ onSelectDestination }) {
             borderRadius: 6,
             padding: 16
           }}>
-            <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>
-              Decrypted / Encrypted Output
+            <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
+              <span>Decrypted / Encrypted Output (Java Engine)</span>
+              {loading && <span style={{ color: '#38bdf8' }}>Processing...</span>}
             </div>
             <div style={{
               fontFamily: '"JetBrains Mono", monospace',
@@ -310,7 +296,7 @@ export default function XorToolkit({ onSelectDestination }) {
               wordBreak: 'break-all',
               minHeight: 50
             }}>
-              {repeatingXorResult || <span style={{ color: '#64748b' }}>Provide key to see repeating XOR result</span>}
+              {repeatingOutput || <span style={{ color: '#64748b' }}>Provide key to see repeating XOR result</span>}
             </div>
           </div>
         )}
