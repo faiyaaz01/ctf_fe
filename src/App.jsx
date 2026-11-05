@@ -16,6 +16,17 @@ import MultiDecoder from './tools/crypto/MultiDecoder';
 import XorToolkit from './tools/crypto/XorToolkit';
 import HashUtils from './tools/crypto/HashUtils';
 import EncodingLab from './tools/crypto/EncodingLab';
+import NumberConverter from './tools/crypto/NumberConverter';
+import RsaHelper from './tools/crypto/RsaHelper';
+import AtbashCipher from './tools/crypto/AtbashCipher';
+import RailFenceCipher from './tools/crypto/RailFenceCipher';
+import BaconianCipher from './tools/crypto/BaconianCipher';
+import BitwiseCalculator from './tools/crypto/BitwiseCalculator';
+import RsaAttackLab from './tools/crypto/RsaAttackLab';
+import VigenereSolver from './tools/crypto/VigenereSolver';
+import PaddingOracleSim from './tools/crypto/PaddingOracleSim';
+import SubstitutionSolver from './tools/crypto/SubstitutionSolver';
+import DiscreteLogSolver from './tools/crypto/DiscreteLogSolver';
 import NotesScratchpad from './tools/workspace/NotesScratchpad';
 import FlagHunter from './tools/workspace/FlagHunter';
 
@@ -40,6 +51,28 @@ function App() {
         return <HashUtils onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'encoding':
         return <EncodingLab onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'number':
+        return <NumberConverter onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'rsa-helper':
+        return <RsaHelper onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'atbash':
+        return <AtbashCipher onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'railfence':
+        return <RailFenceCipher onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'baconian':
+        return <BaconianCipher onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'bitwise':
+        return <BitwiseCalculator onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'rsa-attack':
+        return <RsaAttackLab onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'vigenere':
+        return <VigenereSolver onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'padding-oracle':
+        return <PaddingOracleSim onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'substitution':
+        return <SubstitutionSolver onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'discrete-log':
+        return <DiscreteLogSolver onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'notes':
         return <NotesScratchpad onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'flaghunter':

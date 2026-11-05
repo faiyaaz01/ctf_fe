@@ -8,7 +8,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Instant multi-format string decoding across Base64, Hex, URL, Binary, ROT13, Atbash, and ASCII.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -26,7 +26,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Multi-algorithm hasher (MD5, SHA1, SHA256, SHA512, NTLM) with hash type heuristics.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -35,7 +35,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Advanced radix encoding: Base32, Base58, Base64, Base85, Ascii85, and Hex.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -44,7 +44,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Radix conversions: Decimal, Hexadecimal, Octal, Binary, ASCII, and IEEE-754 floating point.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -53,7 +53,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Compute RSA keys and parameters: N = p * q, phi(N), and private exponent d.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -62,7 +62,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Classic reverse-alphabet monoalphabetic substitution cipher encryptor/decryptor.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -71,7 +71,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Transposition zig-zag cipher encryptor and decryptor with dynamic rail count and offset.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -80,7 +80,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: '5-letter binary steganographic substitution cipher (Standard and full 26-letter variant).',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -89,7 +89,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Interactive visual bitwise operator sandbox (AND, OR, XOR, NOT, shifts, circular rotates).',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -116,7 +116,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Interactive CBC byte-by-byte padding oracle decryption stepping visualizer (PKCS#7).',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
@@ -125,7 +125,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Monoalphabetic cipher solver with n-gram frequency analysis and interactive key-mapping.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {
