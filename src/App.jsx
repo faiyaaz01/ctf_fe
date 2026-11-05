@@ -5,20 +5,44 @@ import { AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChallengesPage from './pages/ChallengesPage';
+import ToolCard from './components/common/ToolCard';
+import CommandPalette from './components/common/CommandPalette';
+import { TOOL_CATALOG } from './tools/toolCatalog';
+import { ArrowLeft } from 'lucide-react';
+
+// Tools
+import MultiDecoder from './tools/crypto/MultiDecoder';
 import NotesScratchpad from './tools/workspace/NotesScratchpad';
 import FlagHunter from './tools/workspace/FlagHunter';
-import CommandPalette from './components/common/CommandPalette';
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeView, setActiveView] = useState('tools'); // 'tools', 'challenges', 'auth'
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [openedToolId, setOpenedToolId] = useState(null); // When clicking a card to open that tool
 
-  const sampleTools = [
-    { id: 'notes', title: 'Notes & Scratchpad', category: 'Workspace', badge: 'Java Engine' },
-    { id: 'flaghunter', title: 'Flag Hunter', category: 'Workspace', badge: 'Java Engine' },
-  ];
+  const filteredTools = activeCategory === 'all'
+    ? TOOL_CATALOG
+    : TOOL_CATALOG.filter((t) => t.category === activeCategory);
+
+  const renderActiveToolComponent = () => {
+    switch (openedToolId) {
+      case 'decoder':
+        return <MultiDecoder onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'notes':
+        return <NotesScratchpad onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'flaghunter':
+        return <FlagHunter onSelectDestination={(id) => setOpenedToolId(id)} />;
+      default:
+        return (
+          <div style={{ background: '#121824', border: '1px solid #1e293b', borderRadius: 8, padding: 40, textAlign: 'center', color: '#64748b' }}>
+            <h3>Tool module ready for Phase 5 implementation!</h3>
+            <p style={{ marginTop: 8, fontSize: 13 }}>Selected tool ID: <code>{openedToolId}</code></p>
+          </div>
+        );
+    }
+  };
 
   return (
     <AuthProvider>
@@ -27,7 +51,10 @@ function App() {
           onOpenPalette={() => setPaletteOpen(true)}
           onOpenAuth={() => setActiveView('auth')}
           onOpenChallenges={() => setActiveView('challenges')}
-          onOpenTools={() => setActiveView('tools')}
+          onOpenTools={() => {
+            setActiveView('tools');
+            setOpenedToolId(null);
+          }}
           activeView={activeView}
         />
 
@@ -35,7 +62,10 @@ function App() {
           {activeView === 'tools' && (
             <Sidebar
               activeCategory={activeCategory}
-              onSelectCategory={setActiveCategory}
+              onSelectCategory={(cat) => {
+                setActiveCategory(cat);
+                setOpenedToolId(null);
+              }}
             />
           )}
 
@@ -54,33 +84,55 @@ function App() {
               )
             ) : activeView === 'challenges' ? (
               <ChallengesPage />
-            ) : (
-              <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
-                {/* Active category tools */}
-                {(activeCategory === 'all' || activeCategory === 'workspace') && (
-                  <>
-                    <NotesScratchpad />
-                    <FlagHunter />
-                  </>
-                )}
+            ) : openedToolId ? (
+              <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <button
+                  onClick={() => setOpenedToolId(null)}
+                  style={{
+                    alignSelf: 'flex-start',
+                    background: 'rgba(56, 189, 248, 0.1)',
+                    border: '1px solid rgba(56, 189, 248, 0.25)',
+                    color: '#38bdf8',
+                    padding: '6px 14px',
+                    borderRadius: 6,
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6
+                  }}
+                >
+                  <ArrowLeft size={14} /> Back to {activeCategory.toUpperCase()} Cards
+                </button>
 
-                {activeCategory !== 'all' && activeCategory !== 'workspace' && (
-                  <div style={{
-                    background: '#121824',
-                    border: '1px solid #1e293b',
-                    borderRadius: 8,
-                    padding: 40,
-                    textAlign: 'center',
-                    color: '#64748b'
-                  }}>
-                    <h3 style={{ fontSize: 16, color: '#f8fafc', marginBottom: 8 }}>
-                      Category: {activeCategory.toUpperCase()}
-                    </h3>
-                    <p style={{ fontSize: 13 }}>
-                      Modular tool suite queued for Phase 5. Select Workspace to test active tools!
-                    </p>
-                  </div>
-                )}
+                {renderActiveToolComponent()}
+              </div>
+            ) : (
+              <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                {/* Category Banner */}
+                <div>
+                  <h1 style={{ fontSize: 22, fontWeight: 700, color: '#f8fafc' }}>
+                    {activeCategory === 'all' ? 'All CTF Tools' : `${activeCategory.toUpperCase()} Toolkit`}
+                  </h1>
+                  <p style={{ color: '#64748b', fontSize: 13, marginTop: 4 }}>
+                    Select any tool card below to launch its dedicated interactive workspace.
+                  </p>
+                </div>
+
+                {/* 3-Column Responsive Tool Cards Grid */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                  gap: 16
+                }}>
+                  {filteredTools.map((tool) => (
+                    <ToolCard
+                      key={tool.id}
+                      tool={tool}
+                      onOpen={(id) => setOpenedToolId(id)}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </main>
@@ -89,10 +141,10 @@ function App() {
         <CommandPalette
           isOpen={paletteOpen}
           onClose={setPaletteOpen}
-          tools={sampleTools}
+          tools={TOOL_CATALOG}
           onSelectTool={(id) => {
             setActiveView('tools');
-            setActiveCategory('workspace');
+            setOpenedToolId(id);
           }}
         />
       </div>
