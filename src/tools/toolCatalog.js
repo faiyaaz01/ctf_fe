@@ -156,6 +156,17 @@ export const TOOL_CATALOG = [
     icon: 'Key'
   },
 
+  // ── 4. Network & OSINT (5 Tools) ──────────────────────────────
+  {
+    id: 'network-calc',
+    title: 'CIDR Subnet Calculator',
+    category: 'osint',
+    categoryLabel: 'Network & OSINT',
+    description: 'Server-side IPv4 & IPv6 CIDR subnet calculator, wildcard generator, binary bitmask breakdown, and host range analyzer.',
+    badge: 'Java Engine',
+    icon: 'Radio'
+  },
+
   // ── 7. Workspace (7 Tools) ─────────────────────────────────────
   {
     id: 'notes',

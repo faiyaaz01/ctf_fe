@@ -30,6 +30,7 @@ import DiscreteLogSolver from './tools/crypto/DiscreteLogSolver';
 import CribDragCracker from './tools/crypto/CribDragCracker';
 import NotesScratchpad from './tools/workspace/NotesScratchpad';
 import FlagHunter from './tools/workspace/FlagHunter';
+import NetworkCalc from './tools/osint/NetworkCalc';
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -80,6 +81,8 @@ function App() {
         return <NotesScratchpad onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'flaghunter':
         return <FlagHunter onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'network-calc':
+        return <NetworkCalc onSelectDestination={(id) => setOpenedToolId(id)} />;
       default:
         return (
           <div style={{ background: '#121824', border: '1px solid #1e293b', borderRadius: 8, padding: 40, textAlign: 'center', color: '#64748b' }}>
