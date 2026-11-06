@@ -143,7 +143,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Two-time pad (one-time pad reuse) ciphertext solver dragging known plaintext cribs.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
   {

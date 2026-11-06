@@ -27,6 +27,7 @@ import VigenereSolver from './tools/crypto/VigenereSolver';
 import PaddingOracleSim from './tools/crypto/PaddingOracleSim';
 import SubstitutionSolver from './tools/crypto/SubstitutionSolver';
 import DiscreteLogSolver from './tools/crypto/DiscreteLogSolver';
+import CribDragCracker from './tools/crypto/CribDragCracker';
 import NotesScratchpad from './tools/workspace/NotesScratchpad';
 import FlagHunter from './tools/workspace/FlagHunter';
 
@@ -73,6 +74,8 @@ function App() {
         return <SubstitutionSolver onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'discrete-log':
         return <DiscreteLogSolver onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'crib-drag':
+        return <CribDragCracker onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'notes':
         return <NotesScratchpad onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'flaghunter':
