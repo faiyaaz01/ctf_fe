@@ -31,6 +31,7 @@ import CribDragCracker from './tools/crypto/CribDragCracker';
 import NotesScratchpad from './tools/workspace/NotesScratchpad';
 import FlagHunter from './tools/workspace/FlagHunter';
 import NetworkCalc from './tools/osint/NetworkCalc';
+import OsintWorkspace from './tools/osint/OsintWorkspace';
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -83,6 +84,8 @@ function App() {
         return <FlagHunter onSelectDestination={(id) => setOpenedToolId(id)} />;
       case 'network-calc':
         return <NetworkCalc onSelectDestination={(id) => setOpenedToolId(id)} />;
+      case 'osint-workspace':
+        return <OsintWorkspace onSelectDestination={(id) => setOpenedToolId(id)} />;
       default:
         return (
           <div style={{ background: '#121824', border: '1px solid #1e293b', borderRadius: 8, padding: 40, textAlign: 'center', color: '#64748b' }}>

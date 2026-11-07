@@ -166,6 +166,15 @@ export const TOOL_CATALOG = [
     badge: 'Java Engine',
     icon: 'Radio'
   },
+  {
+    id: 'osint-workspace',
+    title: 'OSINT Multi-Target Workspace',
+    category: 'osint',
+    categoryLabel: 'Network & OSINT',
+    description: 'Server-side OSINT query compiler for Shodan, Censys, VirusTotal, crt.sh, Google Dorks, and threat intelligence aggregators.',
+    badge: 'Java Engine',
+    icon: 'Radio'
+  },
 
   // ── 7. Workspace (7 Tools) ─────────────────────────────────────
   {
