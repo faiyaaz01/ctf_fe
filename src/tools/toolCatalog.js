@@ -152,7 +152,7 @@ export const TOOL_CATALOG = [
     category: 'crypto',
     categoryLabel: 'Cryptography',
     description: 'Simultaneous 25-rotation Caesar shift inspector for instant human plaintext recognition.',
-    badge: 'Client',
+    badge: 'Java Engine',
     icon: 'Key'
   },
 
