@@ -1,20 +1,21 @@
-import { Terminal, LogOut, User as UserIcon, Trophy, Wrench, Search, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { LogOut, User as UserIcon, Trophy, Wrench, Search } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import ThemeSelector from '../common/ThemeSelector';
 
-export default function Navbar({ onOpenPalette, onOpenAuth, onOpenChallenges, onOpenTools, activeView, sidebarOpen = true, onToggleSidebar }) {
+export default function Navbar({ onOpenPalette, onOpenAuth, onOpenChallenges, onOpenTools, activeView }) {
   const { user, logout, isAuthenticated } = useAuth();
   const { backendOnline } = useApp();
 
   return (
     <header style={{
       height: 58,
+      minHeight: 58,
       background: 'var(--theme-card-bg, rgba(13, 17, 23, 0.85))',
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
       borderBottom: '1px solid var(--theme-border, rgba(255, 255, 255, 0.08))',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.45)',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -23,58 +24,8 @@ export default function Navbar({ onOpenPalette, onOpenAuth, onOpenChallenges, on
       top: 0,
       zIndex: 100
     }}>
-      {/* Brand & Segmented Nav */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-        {/* Brand Icon & Name */}
-        <div
-          style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}
-          onClick={onOpenTools}
-          title="Return to Workbench"
-        >
-          <div style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
-            border: '1px solid var(--theme-border, rgba(255, 255, 255, 0.12))',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-            transition: 'border-color 0.2s'
-          }}>
-            <Terminal size={17} color="var(--theme-accent, #00f0ff)" />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{
-              fontWeight: 800,
-              fontSize: 14,
-              letterSpacing: '0.08em',
-              color: '#f8fafc',
-              fontFamily: '"JetBrains Mono", monospace',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6
-            }}>
-              CTF<span style={{ color: 'var(--theme-accent, #00f0ff)' }}>//PLATFORM</span>
-              <span style={{
-                fontSize: 9,
-                fontWeight: 600,
-                padding: '1px 5px',
-                borderRadius: 4,
-                background: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: '#94a3b8'
-              }}>
-                v2.4
-              </span>
-            </span>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div style={{ width: 1, height: 20, background: 'var(--theme-border, rgba(255,255,255,0.1))' }} />
-
+      {/* Left: View Switcher & API Status */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
         {/* Segmented View Switcher */}
         <nav style={{
           display: 'flex',
@@ -168,120 +119,116 @@ export default function Navbar({ onOpenPalette, onOpenAuth, onOpenChallenges, on
 
       {/* Right Controls: Command Palette, Theme, Operator Profile */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        {/* Command Palette Trigger */}
+        {/* Search / Command Palette Trigger */}
         <button
           onClick={onOpenPalette}
+          title="Open Command Palette (Ctrl+K)"
           style={{
-            background: 'rgba(0, 0, 0, 0.35)',
-            border: '1px solid var(--theme-border, rgba(255, 255, 255, 0.08))',
-            color: '#94a3b8',
-            padding: '6px 12px',
-            borderRadius: 7,
-            fontSize: 12,
-            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             gap: 10,
+            background: 'rgba(0, 0, 0, 0.35)',
+            border: '1px solid var(--theme-border, rgba(255, 255, 255, 0.08))',
+            borderRadius: 7,
+            padding: '6px 12px',
+            color: '#94a3b8',
+            fontSize: 12,
+            fontFamily: '"JetBrains Mono", monospace',
+            cursor: 'pointer',
             transition: 'border-color 0.15s'
           }}
           onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--theme-accent, #00f0ff)'}
           onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--theme-border, rgba(255, 255, 255, 0.08))'}
         >
-          <Search size={13} color="#64748b" />
-          <span style={{ fontSize: 11, color: '#64748b' }}>Search toolkit...</span>
+          <Search size={13} color="var(--theme-accent, #00f0ff)" />
+          <span>Search tools...</span>
           <kbd style={{
-            background: 'rgba(255, 255, 255, 0.06)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            color: '#cbd5e1',
+            fontSize: 9,
+            background: 'rgba(255, 255, 255, 0.08)',
             padding: '2px 5px',
             borderRadius: 4,
-            fontSize: 10,
-            fontFamily: '"JetBrains Mono", monospace',
-            fontWeight: 700
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            color: '#cbd5e1'
           }}>
             ⌘K
           </kbd>
         </button>
 
+        {/* Live Hacker Theme Switcher */}
         <ThemeSelector />
 
-        {/* Auth / Profile Area */}
-        {isAuthenticated && user ? (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            padding: '4px 6px 4px 10px',
-            borderRadius: 8,
-            background: 'rgba(0, 0, 0, 0.35)',
-            border: '1px solid var(--theme-border, rgba(255, 255, 255, 0.08))'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12 }}>
+        {/* User Auth Profile Button */}
+        {isAuthenticated ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '5px 12px',
+              borderRadius: 7,
+              background: 'rgba(0, 0, 0, 0.35)',
+              border: '1px solid var(--theme-border, rgba(255, 255, 255, 0.1))'
+            }}>
               <div style={{
-                width: 22,
-                height: 22,
+                width: 20,
+                height: 20,
                 borderRadius: '50%',
-                background: 'var(--theme-glow, rgba(0, 240, 255, 0.2))',
-                border: '1px solid var(--theme-accent, #00f0ff)',
+                background: 'var(--theme-accent, #00f0ff)',
+                color: '#070a13',
+                fontSize: 10,
+                fontWeight: 800,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                <UserIcon size={12} color="var(--theme-accent, #00f0ff)" />
+                {user?.username?.charAt(0).toUpperCase() || 'U'}
               </div>
-              <span style={{ fontWeight: 600, color: '#f8fafc', fontFamily: '"JetBrains Mono", monospace' }}>
-                {user.username}
-              </span>
-              <span style={{
-                fontSize: 10,
-                padding: '2px 6px',
-                borderRadius: 4,
-                background: 'rgba(0, 255, 157, 0.12)',
-                color: '#00ff9d',
-                fontFamily: '"JetBrains Mono", monospace',
-                fontWeight: 700
-              }}>
-                {user.score || 0} PTS
+              <span style={{ fontSize: 12, fontWeight: 600, color: '#f8fafc', fontFamily: '"JetBrains Mono", monospace' }}>
+                {user?.username}
               </span>
             </div>
+
             <button
               onClick={logout}
-              title="Sign Out Operator"
+              title="Sign Out"
               style={{
                 background: 'transparent',
-                border: 'none',
-                color: '#64748b',
+                border: '1px solid rgba(244, 63, 94, 0.3)',
+                color: '#f43f5e',
+                borderRadius: 6,
+                padding: '6px 8px',
                 cursor: 'pointer',
-                padding: 4,
-                borderRadius: 4,
                 display: 'flex',
                 alignItems: 'center',
-                transition: 'color 0.15s'
+                transition: 'all 0.15s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = '#ef4444'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(244, 63, 94, 0.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
             >
-              <LogOut size={14} />
+              <LogOut size={13} />
             </button>
           </div>
         ) : (
           <button
             onClick={onOpenAuth}
             style={{
-              background: 'linear-gradient(135deg, var(--theme-glow, rgba(0, 240, 255, 0.15)) 0%, transparent 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 14px',
+              borderRadius: 7,
+              background: 'var(--theme-glow, rgba(0, 240, 255, 0.12))',
               border: '1px solid var(--theme-accent, #00f0ff)',
               color: 'var(--theme-accent, #00f0ff)',
               fontSize: 12,
-              padding: '6px 14px',
-              borderRadius: 6,
-              cursor: 'pointer',
               fontWeight: 700,
               fontFamily: '"JetBrains Mono", monospace',
-              letterSpacing: '0.04em',
+              cursor: 'pointer',
               transition: 'all 0.15s'
             }}
           >
-            OPERATOR ACCESS ➔
+            <UserIcon size={13} />
+            <span>OPERATOR LOGIN</span>
           </button>
         )}
       </div>

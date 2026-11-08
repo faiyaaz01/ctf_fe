@@ -193,27 +193,27 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <AppProvider>
-          <div style={{ minHeight: '100vh', background: 'var(--theme-bg, #070a13)', color: '#e2e8f0', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div style={{ minHeight: '100vh', background: 'var(--theme-bg, #070a13)', color: '#e2e8f0', display: 'flex', position: 'relative' }}>
             <InteractiveHackerBackground />
-            <Navbar
-              onOpenPalette={() => setPaletteOpen(true)}
-              onOpenAuth={() => navigate('/login')}
-              onOpenChallenges={() => navigate('/challenges')}
-              onOpenTools={() => navigate('/')}
-              activeView={activeView}
-              sidebarOpen={sidebarOpen}
-              onToggleSidebar={toggleSidebar}
+
+            {/* Attached Full-Height Sidebar */}
+            <Sidebar
+              isOpen={sidebarOpen}
+              onToggle={toggleSidebar}
+              activeCategory={activeCategory}
+              onSelectCategory={navigateToCategory}
+              onOpenHome={() => navigate('/')}
             />
 
-            <div style={{ display: 'flex', flex: 1, position: 'relative', zIndex: 1 }}>
-              {activeView === 'tools' && (
-                <Sidebar
-                  isOpen={sidebarOpen}
-                  onToggle={toggleSidebar}
-                  activeCategory={activeCategory}
-                  onSelectCategory={navigateToCategory}
-                />
-              )}
+            {/* Attached Main Frame with Navbar at Top */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative', zIndex: 1 }}>
+              <Navbar
+                onOpenPalette={() => setPaletteOpen(true)}
+                onOpenAuth={() => navigate('/login')}
+                onOpenChallenges={() => navigate('/challenges')}
+                onOpenTools={() => navigate('/')}
+                activeView={activeView}
+              />
 
               <main style={{ flex: 1, padding: 24, overflowY: 'auto' }}>
                 {activeView === 'auth' ? (
