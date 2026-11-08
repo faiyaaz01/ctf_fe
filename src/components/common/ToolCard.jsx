@@ -7,8 +7,9 @@ export default function ToolCard({ tool, onOpen }) {
     <div
       onClick={() => onOpen(tool.id)}
       style={{
-        background: '#121824',
-        border: '1px solid #1e293b',
+        background: 'var(--theme-card-bg, rgba(18, 24, 36, 0.85))',
+        backdropFilter: 'blur(8px)',
+        border: '1px solid var(--theme-border, #1e293b)',
         borderRadius: 8,
         padding: 18,
         cursor: 'pointer',
@@ -19,12 +20,12 @@ export default function ToolCard({ tool, onOpen }) {
         position: 'relative'
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = '#38bdf8';
+        e.currentTarget.style.borderColor = 'var(--theme-accent, #38bdf8)';
         e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.4)';
+        e.currentTarget.style.boxShadow = '0 8px 24px var(--theme-glow, rgba(0, 240, 255, 0.2))';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = '#1e293b';
+        e.currentTarget.style.borderColor = 'var(--theme-border, #1e293b)';
         e.currentTarget.style.transform = 'translateY(0)';
         e.currentTarget.style.boxShadow = 'none';
       }}
@@ -55,8 +56,8 @@ export default function ToolCard({ tool, onOpen }) {
         </p>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 16, paddingTop: 12, borderTop: '1px solid #161e2e' }}>
-        <span style={{ fontSize: 12, color: '#38bdf8', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--theme-border, #161e2e)' }}>
+        <span style={{ fontSize: 12, color: 'var(--theme-accent, #38bdf8)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
           Launch Tool <ArrowRight size={13} />
         </span>
       </div>

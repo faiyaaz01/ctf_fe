@@ -196,3 +196,46 @@ export const TOOL_CATALOG = [
     icon: 'Flag'
   }
 ];
+
+
+export const CATEGORY_URL_SLUGS = {
+  crypto: 'cryptography',
+  web: 'web',
+  forensics: 'forensics',
+  osint: 'osint',
+  pwn: 'pwn',
+  workspace: 'workspace',
+  reference: 'reference',
+  all: 'tools'
+};
+
+export const SLUG_TO_CATEGORY = {
+  cryptography: 'crypto',
+  cryptograpy: 'crypto',
+  crypto: 'crypto',
+  web: 'web',
+  forensics: 'forensics',
+  forensic: 'forensics',
+  stego: 'forensics',
+  osint: 'osint',
+  network: 'osint',
+  pwn: 'pwn',
+  reverse: 'pwn',
+  binary: 'pwn',
+  workspace: 'workspace',
+  notes: 'workspace',
+  reference: 'reference',
+  cheatsheets: 'reference',
+  cheatsheet: 'reference',
+  tools: 'all',
+  all: 'all'
+};
+
+export function getToolUrl(toolOrId) {
+  const tool = typeof toolOrId === 'string'
+    ? TOOL_CATALOG.find((t) => t.id === toolOrId)
+    : toolOrId;
+  if (!tool) return `/tools/${toolOrId}`;
+  const slug = CATEGORY_URL_SLUGS[tool.category] || tool.category;
+  return `/${slug}/${tool.id}`;
+}
