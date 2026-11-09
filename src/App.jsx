@@ -37,6 +37,7 @@ import NotesScratchpad from './tools/workspace/NotesScratchpad';
 import FlagHunter from './tools/workspace/FlagHunter';
 import NetworkCalc from './tools/osint/NetworkCalc';
 import OsintWorkspace from './tools/osint/OsintWorkspace';
+import WordlistsReference from './tools/osint/WordlistsReference';
 
 function App() {
   const location = useLocation();
@@ -179,6 +180,8 @@ function App() {
         return <NetworkCalc onSelectDestination={navigateToTool} />;
       case 'osint-workspace':
         return <OsintWorkspace onSelectDestination={navigateToTool} />;
+      case 'wordlists-ref':
+        return <WordlistsReference onSelectDestination={navigateToTool} />;
       default:
         return (
           <div style={{ background: '#121824', border: '1px solid #1e293b', borderRadius: 8, padding: 40, textAlign: 'center', color: '#64748b' }}>

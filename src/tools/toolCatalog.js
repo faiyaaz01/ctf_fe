@@ -167,6 +167,15 @@ export const TOOL_CATALOG = [
     icon: 'Radio'
   },
   {
+    id: 'wordlists-ref',
+    title: 'Wordlists & Cheat Sheets',
+    category: 'osint',
+    categoryLabel: 'Network & OSINT',
+    description: 'Curated penetration testing wordlists catalog, SecLists, Kali Linux system paths, and dynamic ffuf / gobuster command compiler.',
+    badge: 'Java Engine',
+    icon: 'Radio'
+  },
+  {
     id: 'osint-workspace',
     title: 'OSINT Multi-Target Workspace',
     category: 'osint',
