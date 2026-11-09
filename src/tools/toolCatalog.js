@@ -156,6 +156,17 @@ export const TOOL_CATALOG = [
     icon: 'Key'
   },
 
+  // ── 2. Web Exploitation (8 Tools) ──────────────────────────────
+  {
+    id: 'jwt-analyzer',
+    title: 'JWT Analyzer & Exploit Lab',
+    category: 'web',
+    categoryLabel: 'Web Exploitation',
+    description: 'Token inspector, signature tamper, "none" algorithm exploit generator, and HMAC secret dictionary brute-forcer.',
+    badge: 'Java Engine',
+    icon: 'Globe'
+  },
+
   // ── 4. Network & OSINT (5 Tools) ──────────────────────────────
   {
     id: 'network-calc',
@@ -205,7 +216,6 @@ export const TOOL_CATALOG = [
     icon: 'Flag'
   }
 ];
-
 
 export const CATEGORY_URL_SLUGS = {
   crypto: 'cryptography',

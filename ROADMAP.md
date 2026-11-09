@@ -92,8 +92,8 @@ PHASE 5: MODULAR TOOL IMPLEMENTATION (64 TOOLS ACROSS 7 DOMAINS)
 [UPCOMING]  Step 5.3.12: Base64MediaExtractor.jsx (Data-URI image, audio, SVG previewer)
 
 --- [5.4 Network & OSINT Suite (5 Tools)] ---
-[COMPLETED]  Step 5.4.1: NetworkCalc.jsx (IPv4/IPv6 CIDR subnet & wildcard calculator)
-[COMPLETED]  Step 5.4.2: OsintWorkspace.jsx (Shodan, VirusTotal, Censys, Dork aggregator)
+[UPCOMING]  Step 5.4.1: NetworkCalc.jsx (IPv4/IPv6 CIDR subnet & wildcard calculator)
+[UPCOMING]  Step 5.4.2: OsintWorkspace.jsx (Shodan, VirusTotal, Censys, Dork aggregator)
 [UPCOMING]  Step 5.4.3: WordlistsReference.jsx (SecLists, RockYou download cheat sheets)
 [UPCOMING]  Step 5.4.4: WhoisReference.jsx (Domain registrar & TLD field guide)
 [UPCOMING]  Step 5.4.5: LiveWhoisDns.jsx + Backend Java TCP Port 43 Socket & Live DNS Resolver

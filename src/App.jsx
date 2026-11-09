@@ -38,6 +38,7 @@ import FlagHunter from './tools/workspace/FlagHunter';
 import NetworkCalc from './tools/osint/NetworkCalc';
 import OsintWorkspace from './tools/osint/OsintWorkspace';
 import WordlistsReference from './tools/osint/WordlistsReference';
+import JwtAnalyzer from './tools/web/JwtAnalyzer';
 
 function App() {
   const location = useLocation();
@@ -182,6 +183,8 @@ function App() {
         return <OsintWorkspace onSelectDestination={navigateToTool} />;
       case 'wordlists-ref':
         return <WordlistsReference onSelectDestination={navigateToTool} />;
+      case 'jwt-analyzer':
+        return <JwtAnalyzer onSelectDestination={navigateToTool} />;
       default:
         return (
           <div style={{ background: '#121824', border: '1px solid #1e293b', borderRadius: 8, padding: 40, textAlign: 'center', color: '#64748b' }}>
@@ -196,7 +199,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <AppProvider>
-          <div style={{ minHeight: '100vh', background: 'var(--theme-bg, #070a13)', color: '#e2e8f0', display: 'flex', position: 'relative' }}>
+          <div style={{ minHeight: '100vh', background: 'var(--theme-bg, #090a0c)', color: '#e2e8f0', display: 'flex', position: 'relative' }}>
             <InteractiveHackerBackground />
 
             {/* Attached Full-Height Sidebar */}
@@ -216,6 +219,8 @@ function App() {
                 onOpenChallenges={() => navigate('/challenges')}
                 onOpenTools={() => navigate('/')}
                 activeView={activeView}
+                activeCategory={activeCategory}
+                openedToolId={openedToolId}
               />
 
               <main style={{ flex: 1, padding: 24, overflowY: 'auto' }}>
@@ -294,7 +299,7 @@ function App() {
                             cursor: 'pointer'
                           }}
                         >
-                          ← RETURN TO DASHBOARD
+                          ← Return to Dashboard
                         </button>
                       )}
                     </div>
