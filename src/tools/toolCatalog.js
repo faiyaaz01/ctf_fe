@@ -166,6 +166,15 @@ export const TOOL_CATALOG = [
     badge: 'Java Engine',
     icon: 'Globe'
   },
+  {
+    id: 'payload-gen',
+    title: 'Web Attack Payload Generator',
+    category: 'web',
+    categoryLabel: 'Web Exploitation',
+    description: 'Curated dictionary across 13 web attack categories with live parameter injection and multi-format encoding.',
+    badge: 'Java Engine',
+    icon: 'Globe'
+  },
 
   // ── 4. Network & OSINT (5 Tools) ──────────────────────────────
   {

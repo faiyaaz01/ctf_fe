@@ -39,6 +39,7 @@ import NetworkCalc from './tools/osint/NetworkCalc';
 import OsintWorkspace from './tools/osint/OsintWorkspace';
 import WordlistsReference from './tools/osint/WordlistsReference';
 import JwtAnalyzer from './tools/web/JwtAnalyzer';
+import PayloadGen from './tools/web/PayloadGen';
 
 function App() {
   const location = useLocation();
@@ -185,6 +186,8 @@ function App() {
         return <WordlistsReference onSelectDestination={navigateToTool} />;
       case 'jwt-analyzer':
         return <JwtAnalyzer onSelectDestination={navigateToTool} />;
+      case 'payload-gen':
+        return <PayloadGen onSelectDestination={navigateToTool} />;
       default:
         return (
           <div style={{ background: '#121824', border: '1px solid #1e293b', borderRadius: 8, padding: 40, textAlign: 'center', color: '#64748b' }}>
